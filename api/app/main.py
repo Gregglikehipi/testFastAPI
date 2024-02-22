@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from Parser import get_detail, get_quantity, get_history_price
+from app.Parser import get_detail, get_quantity, get_history_price
 from pydantic import BaseModel
 from typing import Dict, Optional, List
-from DBHelper import DBHelper
+from app.DBHelper import DBHelper
 
 
 class Item(BaseModel):
@@ -90,7 +90,10 @@ def get_all_item(item_id: int):
     return price
 
 
-@app.get("/comparePrice/{subject_id}")
-def get_all_item(subject_id: int):
-    ans = helper.get_avg_price(subject_id)
-    return {"ans": ans}
+@app.get("/comparePrice/{item_id}")
+def get_all_item(item_id: int):
+    ans = helper.get_item(item_id)
+    subject_id = ans['subjectId']
+    price = ans['price']
+    avgPrice = helper.get_avg_price(subject_id)
+    return {"price": price, "avgPrice": avgPrice}

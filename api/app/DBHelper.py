@@ -2,9 +2,34 @@ from sqlalchemy import create_engine, text
 
 class DBHelper:
     def __init__(self):
-        dbname = f"postgresql+psycopg2://postgres:123@localhost/postgres"
+        dbname = f"postgresql+psycopg2://postgres:123@postgres:5432/postgres"
         engine = create_engine(dbname)
         self.conn = engine.connect()
+        self.create_table()
+
+    def create_table(self):
+        com = text(f"CREATE TABLE IF NOT EXISTS item (id int PRIMARY KEY,"
+                   f"name varchar(50),"
+                   f"brand varchar(50),"
+                   f"brand_id int,site_"
+                   f"brand_id int,"
+                   f"supplier_id int,"
+                   f"sale int,"
+                   f"price int,"
+                   f"sale_price int,"
+                   f"rating int,"
+                   f"feedbacks int,"
+                   f"colors varchar(50),"
+                   f"qnt int,"
+                   f"subjectId int);")
+        self.conn.execute(com)
+        com = text(f"CREATE TABLE IF NOT EXISTS price (id int,"
+                   f"price int,"
+                   f"date int);")
+        self.conn.execute(com)
+        self.conn.commit()
+
+
 
     def qnt_group_items(self, num):
         com = text(f"SELECT SUM(qnt) FROM item WHERE subjectId = {num}")
@@ -28,6 +53,7 @@ class DBHelper:
         ans = 0
         for a in result:
             ans = a[0]
+        print(ans)
         return ans
 
     def add_item(self, item):
